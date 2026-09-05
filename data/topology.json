@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "id": "DWDM-CORE-NYC-BOS",
+      "name": "Metro Core Optical DWDM Ring - NYC to BOS",
+      "tier": "Core",
+      "type": "Optical-DWDM",
+      "location": "Northeast Corridor",
+      "subscribers_impacted": 450000,
+      "parent": null
+    },
+    {
+      "id": "DWDM-CORE-NYC-PHL",
+      "name": "Metro Core Optical DWDM Ring - NYC to PHL",
+      "tier": "Core",
+      "type": "Optical-DWDM",
+      "location": "Mid-Atlantic Corridor",
+      "subscribers_impacted": 380000,
+      "parent": null
+    },
+    {
+      "id": "CR-NYC-01",
+      "name": "Core IP/MPLS Router NYC Primary",
+      "tier": "Core",
+      "type": "MPLS-Router",
+      "location": "NYC 32 Ave Americas DC",
+      "subscribers_impacted": 320000,
+      "parent": "DWDM-CORE-NYC-BOS"
+    },
+    {
+      "id": "CR-NYC-02",
+      "name": "Core IP/MPLS Router NYC Secondary",
+      "tier": "Core",
+      "type": "MPLS-Router",
+      "location": "NYC 111 8th Ave DC",
+      "subscribers_impacted": 290000,
+      "parent": "DWDM-CORE-NYC-PHL"
+    },
+    {
+      "id": "CR-BOS-01",
+      "name": "Core IP/MPLS Router Boston Primary",
+      "tier": "Core",
+      "type": "MPLS-Router",
+      "location": "Boston Summer St DC",
+      "subscribers_impacted": 210000,
+      "parent": "DWDM-CORE-NYC-BOS"
+    },
+    {
+      "id": "AGG-MAN-01",
+      "name": "Metro Aggregation Switch Manhattan East",
+      "tier": "Aggregation",
+      "type": "Metro-Ethernet",
+      "location": "Manhattan Midtown Hub",
+      "subscribers_impacted": 95000,
+      "parent": "CR-NYC-01"
+    },
+    {
+      "id": "AGG-BKLYN-01",
+      "name": "Metro Aggregation Switch Brooklyn Hub",
+      "tier": "Aggregation",
+      "type": "Metro-Ethernet",
+      "location": "Brooklyn Downtown Hub",
+      "subscribers_impacted": 85000,
+      "parent": "CR-NYC-02"
+    },
+    {
+      "id": "AGG-BOS-NORTH",
+      "name": "Metro Aggregation Switch Boston North Hub",
+      "tier": "Aggregation",
+      "type": "Metro-Ethernet",
+      "location": "Cambridge Tech Hub",
+      "subscribers_impacted": 75000,
+      "parent": "CR-BOS-01"
+    },
+    {
+      "id": "BNG-MAN-01",
+      "name": "Broadband Network Gateway Manhattan-1",
+      "tier": "Edge",
+      "type": "BNG-Subscriber",
+      "location": "Manhattan Midtown Hub",
+      "subscribers_impacted": 60000,
+      "parent": "AGG-MAN-01"
+    },
+    {
+      "id": "gNB-MAN-101",
+      "name": "5G gNodeB Cell Site Midtown 42nd",
+      "tier": "Access",
+      "type": "5G-RAN",
+      "location": "42nd & Broadway, NYC",
+      "subscribers_impacted": 14000,
+      "parent": "AGG-MAN-01"
+    },
+    {
+      "id": "gNB-MAN-102",
+      "name": "5G gNodeB Cell Site Grand Central",
+      "tier": "Access",
+      "type": "5G-RAN",
+      "location": "Park Ave & 42nd, NYC",
+      "subscribers_impacted": 18000,
+      "parent": "AGG-MAN-01"
+    },
+    {
+      "id": "gNB-BKLYN-201",
+      "name": "5G gNodeB Cell Site DUMBO Tower",
+      "tier": "Access",
+      "type": "5G-RAN",
+      "location": "DUMBO Waterfront, Brooklyn",
+      "subscribers_impacted": 12000,
+      "parent": "AGG-BKLYN-01"
+    },
+    {
+      "id": "gNB-BOS-301",
+      "name": "5G gNodeB Cell Site MIT Kendall Square",
+      "tier": "Access",
+      "type": "5G-RAN",
+      "location": "Kendall Sq, Cambridge MA",
+      "subscribers_impacted": 16000,
+      "parent": "AGG-BOS-NORTH"
+    },
+    {
+      "id": "PWR-SITE-MAN-101",
+      "name": "Auxiliary Rectifier & UPS Cell Site 101",
+      "tier": "Facility",
+      "type": "Power-UPS",
+      "location": "42nd & Broadway Rooftop",
+      "subscribers_impacted": 14000,
+      "parent": "gNB-MAN-101"
+    },
+    {
+      "id": "PWR-SITE-BKLYN-201",
+      "name": "Auxiliary Rectifier & UPS Cell Site 201",
+      "tier": "Facility",
+      "type": "Power-UPS",
+      "location": "DUMBO Waterfront Enclosure",
+      "subscribers_impacted": 12000,
+      "parent": "gNB-BKLYN-201"
+    }
+  ],
+  "links": [
+    { "source": "DWDM-CORE-NYC-BOS", "target": "CR-NYC-01", "type": "Optical-100G", "redundant": true },
+    { "source": "DWDM-CORE-NYC-BOS", "target": "CR-BOS-01", "type": "Optical-100G", "redundant": true },
+    { "source": "DWDM-CORE-NYC-PHL", "target": "CR-NYC-02", "type": "Optical-100G", "redundant": true },
+    { "source": "CR-NYC-01", "target": "AGG-MAN-01", "type": "Ethernet-40G", "redundant": true },
+    { "source": "CR-NYC-02", "target": "AGG-BKLYN-01", "type": "Ethernet-40G", "redundant": true },
+    { "source": "CR-BOS-01", "target": "AGG-BOS-NORTH", "type": "Ethernet-40G", "redundant": true },
+    { "source": "AGG-MAN-01", "target": "BNG-MAN-01", "type": "Ethernet-10G", "redundant": false },
+    { "source": "AGG-MAN-01", "target": "gNB-MAN-101", "type": "Fronthaul-10G", "redundant": false },
+    { "source": "AGG-MAN-01", "target": "gNB-MAN-102", "type": "Fronthaul-10G", "redundant": false },
+    { "source": "AGG-BKLYN-01", "target": "gNB-BKLYN-201", "type": "Fronthaul-10G", "redundant": false },
+    { "source": "AGG-BOS-NORTH", "target": "gNB-BOS-301", "type": "Fronthaul-10G", "redundant": false },
+    { "source": "gNB-MAN-101", "target": "PWR-SITE-MAN-101", "type": "DC-Power", "redundant": false },
+    { "source": "gNB-BKLYN-201", "target": "PWR-SITE-BKLYN-201", "type": "DC-Power", "redundant": false }
+  ]
+}

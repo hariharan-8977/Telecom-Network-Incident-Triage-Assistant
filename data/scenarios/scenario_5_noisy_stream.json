@@ -1,0 +1,117 @@
+{
+  "scenario_id": "SCN-05-NOISY-STREAM",
+  "title": "High Noise Stream with Isolated Aggregation Memory Alert Cluster",
+  "description": "A live telemetry feed dominated by background chatter, transient heartbeats, and benign telemetry flutters, containing a genuine isolated memory leak on AGG-BKLYN-01. Demonstrates non-forcing of noise alerts.",
+  "expected_incident_count": 1,
+  "expected_noise_count": 6,
+  "alerts": [
+    {
+      "id": "ALT-5001",
+      "timestamp": "2026-09-06T18:10:00Z",
+      "device_id": "AGG-BKLYN-01",
+      "device_tier": "Aggregation",
+      "severity": "CRITICAL",
+      "event_type": "HIGH_MEMORY_USAGE",
+      "message": "System RAM utilization reached 94.6% (threshold 90.0%). Process 'fib_mgr' allocated 12.8GB heap.",
+      "metric_name": "ram_util_percent",
+      "metric_value": 94.6,
+      "source_subsystem": "OS-Memory"
+    },
+    {
+      "id": "ALT-5002",
+      "timestamp": "2026-09-06T18:10:20Z",
+      "device_id": "AGG-BKLYN-01",
+      "device_tier": "Aggregation",
+      "severity": "CRITICAL",
+      "event_type": "BUFFER_ALLOCATION_FAILURE",
+      "message": "Forwarding engine packet buffer pool exhausted. Drop tail active on queue Q1-Voice.",
+      "metric_name": "buffer_drop_rate",
+      "metric_value": 810,
+      "source_subsystem": "Fwd-Engine"
+    },
+    {
+      "id": "ALT-5003",
+      "timestamp": "2026-09-06T18:10:45Z",
+      "device_id": "AGG-BKLYN-01",
+      "device_tier": "Aggregation",
+      "severity": "MAJOR",
+      "event_type": "PACKET_DROP_QUEUE",
+      "message": "Drop tail discards on line card 2 egress: 14,200 packets dropped in 30s.",
+      "metric_name": "packet_drops",
+      "metric_value": 14200,
+      "source_subsystem": "QoS-Drops"
+    },
+    {
+      "id": "ALT-9501",
+      "timestamp": "2026-09-06T18:05:00Z",
+      "device_id": "CR-BOS-01",
+      "device_tier": "Core",
+      "severity": "INFO",
+      "event_type": "NTP_SYNC_OK",
+      "message": "Stratum 1 atomic reference clock sync confirmed. Jitter < 0.2ms.",
+      "metric_name": "clock_stratum",
+      "metric_value": 1,
+      "source_subsystem": "Sys-Clock"
+    },
+    {
+      "id": "ALT-9502",
+      "timestamp": "2026-09-06T18:06:12Z",
+      "device_id": "gNB-BOS-301",
+      "device_tier": "Access",
+      "severity": "INFO",
+      "event_type": "USER_ATTACH_MILESTONE",
+      "message": "Hourly user attach count: 12,400 active UEs (within expected band).",
+      "metric_name": "ue_count",
+      "metric_value": 12400,
+      "source_subsystem": "RAN-Capacity"
+    },
+    {
+      "id": "ALT-9503",
+      "timestamp": "2026-09-06T18:08:00Z",
+      "device_id": "PWR-SITE-BKLYN-201",
+      "device_tier": "Facility",
+      "severity": "INFO",
+      "event_type": "CABINET_DOOR_OPEN",
+      "message": "Physical security contact sensor: Scheduled maintenance technician access.",
+      "metric_name": "door_status",
+      "metric_value": 1,
+      "source_subsystem": "Facility-Access"
+    },
+    {
+      "id": "ALT-9504",
+      "timestamp": "2026-09-06T18:11:00Z",
+      "device_id": "BNG-MAN-01",
+      "device_tier": "Edge",
+      "severity": "WARNING",
+      "event_type": "PORT_TRAFFIC_SHAPER_BURST",
+      "message": "Subscriber VLAN 402 exceeded committed information rate (CIR); traffic shaped.",
+      "metric_name": "policed_kbps",
+      "metric_value": 10200,
+      "source_subsystem": "QoS-Policing"
+    },
+    {
+      "id": "ALT-9505",
+      "timestamp": "2026-09-06T18:12:30Z",
+      "device_id": "DWDM-CORE-NYC-PHL",
+      "device_tier": "Core",
+      "severity": "INFO",
+      "event_type": "LASER_BIAS_CURRENT_NORMAL",
+      "message": "EDFA amplifier pump laser bias current within normal operating margins (320mA).",
+      "metric_name": "pump_ma",
+      "metric_value": 320,
+      "source_subsystem": "Optical-EDFA"
+    },
+    {
+      "id": "ALT-9506",
+      "timestamp": "2026-09-06T18:13:00Z",
+      "device_id": "gNB-MAN-102",
+      "device_tier": "Access",
+      "severity": "INFO",
+      "event_type": "NEIGHBOR_BEACON_DISCOVERY",
+      "message": "Automatic Neighbor Relation (ANR) discovered 1 new microcell PCI 402.",
+      "metric_name": "pci_id",
+      "metric_value": 402,
+      "source_subsystem": "RAN-ANR"
+    }
+  ]
+}

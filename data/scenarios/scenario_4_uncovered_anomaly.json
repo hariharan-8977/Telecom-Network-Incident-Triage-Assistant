@@ -1,0 +1,69 @@
+{
+  "scenario_id": "SCN-04-UNCOVERED-ANOMALY",
+  "title": "Zero-Day Optical Quantum Key Distribution (QKD) Microcode Lockup",
+  "description": "Experimental dark-fiber quantum cryptography transponder experiences uncatalogued phase decoherence and microcode lockup. No existing troubleshooting runbook covers this technology. Tests the system's strict grounding and escalation discipline.",
+  "expected_incident_count": 1,
+  "expected_noise_count": 2,
+  "alerts": [
+    {
+      "id": "ALT-4001",
+      "timestamp": "2026-09-06T16:04:12Z",
+      "device_id": "QKD-EXP-01",
+      "device_tier": "Core",
+      "severity": "CRITICAL",
+      "event_type": "QUANTUM_PHASE_DECOHERENCE",
+      "message": "Continuous-variable QKD photonic receiver phase variance exceeded Bell-state fidelity threshold (F < 0.62).",
+      "metric_name": "quantum_fidelity",
+      "metric_value": 0.58,
+      "source_subsystem": "Photonic-QKD"
+    },
+    {
+      "id": "ALT-4002",
+      "timestamp": "2026-09-06T16:04:15Z",
+      "device_id": "QKD-EXP-01",
+      "device_tier": "Core",
+      "severity": "CRITICAL",
+      "event_type": "ASIC_MICROCODE_TRAP",
+      "message": "Custom cryogenic FPGA coprocessor halted on undocumented vector exception 0xDEADC0DE. Raw registers: RAX=0x41414141.",
+      "metric_name": "asic_trap_code",
+      "metric_value": 3735929054,
+      "source_subsystem": "Cryo-FPGA"
+    },
+    {
+      "id": "ALT-4003",
+      "timestamp": "2026-09-06T16:04:20Z",
+      "device_id": "QKD-EXP-01",
+      "device_tier": "Core",
+      "severity": "MAJOR",
+      "event_type": "SYNC_TOKEN_RING_CORRUPTION",
+      "message": "Quantum key distribution synchronization token ring desynchronized across optical multiplexer port 4.",
+      "metric_name": "sync_token_loss_rate",
+      "metric_value": 99.8,
+      "source_subsystem": "QKD-Signaling"
+    },
+    {
+      "id": "ALT-6001",
+      "timestamp": "2026-09-06T16:03:00Z",
+      "device_id": "gNB-MAN-102",
+      "device_tier": "Access",
+      "severity": "INFO",
+      "event_type": "ROUTINE_GPS_LOCK",
+      "message": "GPS disciplined oscillator locked to 12 visible GNSS satellites. Time error 4ns.",
+      "metric_name": "gnss_satellites",
+      "metric_value": 12,
+      "source_subsystem": "Timing-GNSS"
+    },
+    {
+      "id": "ALT-6002",
+      "timestamp": "2026-09-06T16:05:00Z",
+      "device_id": "BNG-MAN-01",
+      "device_tier": "Edge",
+      "severity": "INFO",
+      "event_type": "RADIUS_ACCOUNTING_BATCH",
+      "message": "Periodic RADIUS interim accounting packet flushed: 4,200 records acknowledged.",
+      "metric_name": "accounting_records",
+      "metric_value": 4200,
+      "source_subsystem": "AAA-Billing"
+    }
+  ]
+}

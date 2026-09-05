@@ -1,0 +1,81 @@
+{
+  "scenario_id": "SCN-03-POWER-GRID",
+  "title": "Severe Weather Commercial AC Mains Outage at Cell Site 101",
+  "description": "Localized grid failure cuts utility power to Midtown rooftop cell site. Rectifier switches to emergency DC battery backup with decaying float voltage, alongside background noise alarms.",
+  "expected_incident_count": 1,
+  "expected_noise_count": 2,
+  "alerts": [
+    {
+      "id": "ALT-3001",
+      "timestamp": "2026-09-06T14:20:00Z",
+      "device_id": "PWR-SITE-MAN-101",
+      "device_tier": "Facility",
+      "severity": "CRITICAL",
+      "event_type": "MAINS_AC_POWER_FAIL",
+      "message": "Phase 1/2/3 utility voltage dropped to 0V. Transfer to emergency battery bank active.",
+      "metric_name": "ac_voltage_rms",
+      "metric_value": 0.0,
+      "source_subsystem": "Facility-Power"
+    },
+    {
+      "id": "ALT-3002",
+      "timestamp": "2026-09-06T14:20:02Z",
+      "device_id": "PWR-SITE-MAN-101",
+      "device_tier": "Facility",
+      "severity": "MAJOR",
+      "event_type": "BATTERY_DISCHARGE_ACTIVE",
+      "message": "Rectifier DC bus voltage depleted to 47.8V (nominal 54V). Current draw: 88A.",
+      "metric_name": "dc_bus_voltage",
+      "metric_value": 47.8,
+      "source_subsystem": "Facility-Power"
+    },
+    {
+      "id": "ALT-3003",
+      "timestamp": "2026-09-06T14:20:05Z",
+      "device_id": "gNB-MAN-101",
+      "device_tier": "Access",
+      "severity": "MAJOR",
+      "event_type": "POWER_ANOMALY_DOWNGRADE",
+      "message": "Operating on secondary auxiliary power rail. Subsystem thermal sensors active.",
+      "metric_name": "rail_state",
+      "metric_value": 2,
+      "source_subsystem": "Hardware-Sensors"
+    },
+    {
+      "id": "ALT-3004",
+      "timestamp": "2026-09-06T14:20:10Z",
+      "device_id": "PWR-SITE-MAN-101",
+      "device_tier": "Facility",
+      "severity": "CRITICAL",
+      "event_type": "EST_BATTERY_RUNTIME_LOW",
+      "message": "Estimated battery reserve remaining: 42 minutes under current load.",
+      "metric_name": "battery_runtime_min",
+      "metric_value": 42.0,
+      "source_subsystem": "Facility-Power"
+    },
+    {
+      "id": "ALT-7001",
+      "timestamp": "2026-09-06T14:19:00Z",
+      "device_id": "CR-NYC-02",
+      "device_tier": "Core",
+      "severity": "INFO",
+      "event_type": "CONFIG_COMMIT_LOG",
+      "message": "User 'netops-admin' committed configuration revision #4881 (ACL comment update).",
+      "metric_name": "commit_id",
+      "metric_value": 4881,
+      "source_subsystem": "Sys-Audit"
+    },
+    {
+      "id": "ALT-7002",
+      "timestamp": "2026-09-06T14:21:00Z",
+      "device_id": "AGG-BOS-NORTH",
+      "device_tier": "Aggregation",
+      "severity": "INFO",
+      "event_type": "LLDP_NEIGHBOR_DISCOVERY",
+      "message": "Periodic LLDP announcement received on management port mgmt0.",
+      "metric_name": "lldp_chassis",
+      "metric_value": 1,
+      "source_subsystem": "Sys-Discovery"
+    }
+  ]
+}

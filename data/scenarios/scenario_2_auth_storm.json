@@ -1,0 +1,105 @@
+{
+  "scenario_id": "SCN-02-AUTH-STORM",
+  "title": "Midtown Manhattan 5G Radio Authentication & Signaling Storm",
+  "description": "Massive concentration of IoT smart meters and morning commuters attempting concurrent 5G registration following an edge baseband restart. Overloads control plane signaling with 7 correlated alarms and 3 unrelated noise events.",
+  "expected_incident_count": 1,
+  "expected_noise_count": 3,
+  "alerts": [
+    {
+      "id": "ALT-2001",
+      "timestamp": "2026-09-06T09:02:11Z",
+      "device_id": "gNB-MAN-101",
+      "device_tier": "Access",
+      "severity": "CRITICAL",
+      "event_type": "AUTH_FAILURE_BURST",
+      "message": "5G NAS Authentication reject storm: 1,840 failures/sec (baseline: 4/sec). Error code: 5GS-Cause #9 UE-Identity-Cannot-Be-Derived.",
+      "metric_name": "nas_auth_failures_per_sec",
+      "metric_value": 1840,
+      "source_subsystem": "RAN-ControlPlane"
+    },
+    {
+      "id": "ALT-2002",
+      "timestamp": "2026-09-06T09:02:14Z",
+      "device_id": "gNB-MAN-101",
+      "device_tier": "Access",
+      "severity": "CRITICAL",
+      "event_type": "RRC_CONNECTION_REJECT_HIGH",
+      "message": "Radio Resource Control establishment requests rejected due to signaling admission control ceiling (94% rejected).",
+      "metric_name": "rrc_reject_percentage",
+      "metric_value": 94.0,
+      "source_subsystem": "RAN-RRC"
+    },
+    {
+      "id": "ALT-2003",
+      "timestamp": "2026-09-06T09:02:17Z",
+      "device_id": "gNB-MAN-101",
+      "device_tier": "Access",
+      "severity": "MAJOR",
+      "event_type": "NGAP_SETUP_FAILURE",
+      "message": "NGAP association setup timeout with Core AMF pool 10.240.12.1. Retransmit timer expired.",
+      "metric_name": "ngap_timeouts",
+      "metric_value": 312,
+      "source_subsystem": "RAN-NGAP"
+    },
+    {
+      "id": "ALT-2004",
+      "timestamp": "2026-09-06T09:02:22Z",
+      "device_id": "gNB-MAN-102",
+      "device_tier": "Access",
+      "severity": "WARNING",
+      "event_type": "CELL_HANDOVER_CONGESTION",
+      "message": "Target cell sector overflow: Neighbor gNB-MAN-101 shedding UEs via forced mobility handovers.",
+      "metric_name": "handover_reject_rate",
+      "metric_value": 34.5,
+      "source_subsystem": "RAN-Mobility"
+    },
+    {
+      "id": "ALT-2005",
+      "timestamp": "2026-09-06T09:02:30Z",
+      "device_id": "AGG-MAN-01",
+      "device_tier": "Aggregation",
+      "severity": "WARNING",
+      "event_type": "HIGH_CONTROL_PLANE_LATENCY",
+      "message": "Midtown hub fronthaul VLAN control plane queue jitter 240ms due to signaling burst.",
+      "metric_name": "cp_latency_ms",
+      "metric_value": 240,
+      "source_subsystem": "Metro-QoS"
+    },
+    {
+      "id": "ALT-8001",
+      "timestamp": "2026-09-06T09:01:00Z",
+      "device_id": "CR-BOS-01",
+      "device_tier": "Core",
+      "severity": "INFO",
+      "event_type": "SNMP_POLL_TIMEOUT_TRANSIENT",
+      "message": "Transient SNMP poll response delay on interface Gi0/0/23 (resolved on automatic retry).",
+      "metric_name": "snmp_retries",
+      "metric_value": 1,
+      "source_subsystem": "NMS-Agent"
+    },
+    {
+      "id": "ALT-8002",
+      "timestamp": "2026-09-06T09:02:40Z",
+      "device_id": "PWR-SITE-BKLYN-201",
+      "device_tier": "Facility",
+      "severity": "INFO",
+      "event_type": "RECTIFIER_HEALTH_CHECK",
+      "message": "Automated bi-weekly battery float calibration check completed with 99.4% state-of-health.",
+      "metric_name": "battery_soh",
+      "metric_value": 99.4,
+      "source_subsystem": "Facility-Power"
+    },
+    {
+      "id": "ALT-8003",
+      "timestamp": "2026-09-06T09:03:00Z",
+      "device_id": "BNG-MAN-01",
+      "device_tier": "Edge",
+      "severity": "INFO",
+      "event_type": "DHCP_LEASE_RENEW_NORMAL",
+      "message": "Residential DHCP pool lease renewal rate standard 140 leases/min.",
+      "metric_name": "dhcp_leases_min",
+      "metric_value": 140,
+      "source_subsystem": "Edge-DHCP"
+    }
+  ]
+}
