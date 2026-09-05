@@ -78,6 +78,10 @@ Then open your browser to:
 http://localhost:8000
 ```
 
+### Live Public Cloud Deployment
+- **Live Interactive Website**: [https://specified-pretty-dark-dinner.trycloudflare.com](https://specified-pretty-dark-dinner.trycloudflare.com)
+
+
 ### Environment Variable (Optional)
 To enable Gemini generative synthesis:
 ```bash
