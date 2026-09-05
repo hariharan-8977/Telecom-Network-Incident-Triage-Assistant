@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telecom Network Incident Triage Assistant | TRACK_ID=PS07</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <div class="app-layout">
+    <!-- Top Header -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="brand-badge">PS07</div>
+        <div class="brand-title">
+          <h1>Telecom Incident Triage Assistant</h1>
+          <span class="brand-sub">Autonomous Network Operations Center (NOC) Alarm Correlation & Runbook Grounding</span>
+        </div>
+      </div>
+      <div class="nav-metrics">
+        <div class="metric-pill">
+          <span class="status-dot pulsing" id="gemini-status-dot"></span>
+          <span class="pill-label">Gemini Reasoner:</span>
+          <span class="pill-val" id="gemini-status-text">Active / Grounded</span>
+        </div>
+        <div class="metric-pill">
+          <span class="pill-label">Active Track:</span>
+          <span class="pill-val text-cyan">TRACK_ID=PS07</span>
+        </div>
+        <div class="metric-pill">
+          <span class="pill-label">NOC Time (UTC):</span>
+          <span class="pill-val font-mono" id="live-clock">--:--:--</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Control & Scenario Bar -->
+    <div class="control-bar">
+      <div class="scenario-selector">
+        <label for="scenario-dropdown" class="control-label">Select Incident Scenario:</label>
+        <select id="scenario-dropdown" class="custom-select">
+          <option value="" disabled selected>Loading scenarios...</option>
+        </select>
+      </div>
+
+      <div class="action-buttons">
+        <button id="btn-run-triage" class="btn btn-primary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Run Triage Engine
+        </button>
+        <button id="btn-view-topology" class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+          Topology Visualizer
+        </button>
+        <button id="btn-view-runbooks" class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+          Browse Runbooks
+        </button>
+      </div>
+    </div>
+
+    <!-- Executive KPI Ribbon -->
+    <section class="kpi-ribbon">
+      <div class="kpi-card">
+        <div class="kpi-title">Raw Alerts Ingested</div>
+        <div class="kpi-value text-slate" id="kpi-total-alerts">0</div>
+        <div class="kpi-desc">Multi-vendor telemetry stream</div>
+      </div>
+      <div class="kpi-card highlight-critical">
+        <div class="kpi-title">Correlated Incidents</div>
+        <div class="kpi-value text-rose" id="kpi-incidents">0</div>
+        <div class="kpi-desc" id="kpi-incidents-sub">Deduplicated root causes</div>
+      </div>
+      <div class="kpi-card highlight-noise">
+        <div class="kpi-title">Isolated Noise Filtered</div>
+        <div class="kpi-value text-amber" id="kpi-noise">0</div>
+        <div class="kpi-desc">Non-forced background telemetry</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Blast Radius</div>
+        <div class="kpi-value text-purple" id="kpi-subscribers">0</div>
+        <div class="kpi-desc">Subscribers impacted</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Triage Engine Latency</div>
+        <div class="kpi-value text-emerald" id="kpi-latency">0 ms</div>
+        <div class="kpi-desc">Sub-second correlation</div>
+      </div>
+    </section>
+
+    <!-- Main Workspace 3-Pane Layout -->
+    <main class="main-workspace">
+      <!-- Left Column: Raw Stream & Topology Map -->
+      <aside class="left-pane panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="icon-pulse"></span>
+            <h2>Ingested Stream & Topology</h2>
+          </div>
+          <div class="stream-tabs">
+            <button class="tab-btn active" data-filter="all">All (<span id="count-all">0</span>)</button>
+            <button class="tab-btn" data-filter="signal">Signal (<span id="count-signal">0</span>)</button>
+            <button class="tab-btn" data-filter="noise">Noise (<span id="count-noise">0</span>)</button>
+          </div>
+        </div>
+
+        <!-- Mini Topology Status -->
+        <div class="mini-topology-card">
+          <div class="subcard-header">
+            <span class="subcard-title">Network Blast Radius Status</span>
+            <span class="badge badge-sm" id="topo-status-badge">Nominal</span>
+          </div>
+          <div class="topology-grid" id="topology-grid">
+            <!-- Populated dynamically with node badges -->
+          </div>
+        </div>
+
+        <div class="stream-container" id="stream-feed">
+          <div class="empty-state">Select a scenario above and click 'Run Triage Engine' to simulate incoming alarms.</div>
+        </div>
+      </aside>
+
+      <!-- Center Column: Prioritized Incidents & Grounded Triage -->
+      <section class="center-pane panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2>Active Incidents & Runbook Grounding</h2>
+          </div>
+          <div class="incident-badge-group">
+            <span class="badge badge-p1" id="badge-p1-count">0 P1</span>
+            <span class="badge badge-p2" id="badge-p2-count">0 P2</span>
+            <span class="badge badge-p3" id="badge-p3-count">0 P3</span>
+          </div>
+        </div>
+
+        <div class="incident-list-scroll" id="incidents-container">
+          <div class="empty-state">No active incidents. Run a scenario to trigger triage.</div>
+        </div>
+      </section>
+
+      <!-- Right Column: Operator Copilot & Escalation Package -->
+      <aside class="right-pane panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2>NOC Operator Copilot</h2>
+          </div>
+          <span class="badge badge-ai">Gemini Grounded</span>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="copilot-container">
+          <div class="copilot-messages" id="copilot-chat-history">
+            <div class="chat-bubble ai">
+              <strong>NOC Copilot:</strong> Ready. I ground every recommendation in authorized telecom runbooks with citations. If an incident has no matching runbook, I immediately draft a structured escalation package for L3 engineering.
+            </div>
+          </div>
+          <form class="copilot-input-bar" id="copilot-form">
+            <input type="text" id="copilot-input" placeholder="Ask about active incident, CLI commands, or SLA impact..." autocomplete="off">
+            <button type="submit" class="btn btn-send" title="Send to Copilot">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </form>
+        </div>
+
+        <!-- Quick Escalation / Handover Box -->
+        <div class="quick-export-card">
+          <div class="export-header">
+            <span>Engineering Handover</span>
+            <button class="btn btn-xs btn-outline" id="btn-copy-handover">Copy Handover Brief</button>
+          </div>
+          <pre class="handover-text font-mono" id="handover-preview">Run an incident triage to generate instant NOC shift handover notes.</pre>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Runbooks Modal -->
+  <div class="modal-overlay" id="runbooks-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Authorized NOC Troubleshooting Runbooks</h2>
+        <button class="btn-close" id="btn-close-runbooks">&times;</button>
+      </div>
+      <div class="modal-body" id="runbooks-modal-body">
+        Loading runbooks...
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Topology Modal -->
+  <div class="modal-overlay" id="topology-modal">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <h2>Network Topology & Hierarchy Graph</h2>
+        <button class="btn-close" id="btn-close-topology">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="topology-legend">
+          <span class="legend-item"><span class="legend-dot core"></span> Core Transport</span>
+          <span class="legend-item"><span class="legend-dot aggregation"></span> Aggregation</span>
+          <span class="legend-item"><span class="legend-dot edge"></span> Edge / BNG</span>
+          <span class="legend-item"><span class="legend-dot access"></span> 5G RAN Access</span>
+          <span class="legend-item"><span class="legend-dot facility"></span> Power & Facility</span>
+        </div>
+        <div class="topology-tree-view" id="topology-tree-view"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
