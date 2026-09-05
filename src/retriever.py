@@ -67,14 +67,18 @@ class RunbookRetriever:
 
         # Extract Mitigation Sections
         mitigation_sections: List[RunbookSection] = []
-        sec_matches = re.finditer(r"###?\s+(Section\s+[0-9\.]+\s*-\s*[^\n]+)\n([\s\S]*?)(?=###?|\Z)", content)
-        for m in sec_matches:
+        sec_pattern = re.compile(
+            r"(?:###?\s+|\d+\.\s*\*\*)(Section\s+[0-9\.]+\s*-\s*[^\*\n]+)\*\*?:?\n([\s\S]*?)(?=(?:\n\d+\.\s*\*\*Section|###|\n##\s+|\Z))",
+            re.MULTILINE
+        )
+        for m in sec_pattern.finditer(content):
             sec_header = m.group(1).strip()
             sec_body = m.group(2).strip()
             commands = re.findall(r"```(?:bash|sh)?\n([\s\S]*?)```", sec_body)
             clean_cmds = [cmd.strip() for block in commands for cmd in block.splitlines() if cmd.strip()]
+            sec_id = sec_header.split("-")[0].strip()
             mitigation_sections.append(RunbookSection(
-                section_id=sec_header.split("-")[0].strip(),
+                section_id=sec_id,
                 title=sec_header,
                 description=sec_body,
                 commands=clean_cmds
